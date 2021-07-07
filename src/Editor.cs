@@ -63,8 +63,17 @@ public class Window : Form {
         Controls.Add(menuStrip);         // because whatever is added last goes on top.
     }
 
+    void alignmentButtonChecked(object sender, EventArgs e) {
+        if (alignLeftBTN.Checked)
+            textBox.SelectionAlignment = HorizontalAlignment.Left;
+        else if (alignCenterBTN.Checked)    
+            textBox.SelectionAlignment = HorizontalAlignment.Center;
+        else if (alignRightBTN.Checked)
+            textBox.SelectionAlignment = HorizontalAlignment.Right;
+    }
+
     // NEEDS TO BE FIXED, DOESN'T WORK PROPERLY. 
-    void buttonCheckChanged(object sender, EventArgs e) {
+    void styleButtonChecked(object sender, EventArgs e) {
         if (boldBTN.Checked) 
             textBox.Font = new Font(FontFamily.GenericMonospace, 13, FontStyle.Bold);
         else if (italicBTN.Checked)
@@ -83,9 +92,13 @@ public class Window : Form {
     }
 
     void buttonActions() {
-        boldBTN.Click += new EventHandler(buttonCheckChanged);
-        italicBTN.Click += new EventHandler(buttonCheckChanged);
-        underlineBTN.Click += new EventHandler(buttonCheckChanged);
+        boldBTN.Click += new EventHandler(styleButtonChecked);
+        italicBTN.Click += new EventHandler(styleButtonChecked);
+        underlineBTN.Click += new EventHandler(styleButtonChecked);
+
+        alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
+        alignCenterBTN.Click += new EventHandler(alignmentButtonChecked);
+        alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
 
         heading2BTN.Click += new EventHandler(colorButtonsClick);
         heading1BTN.Click += new EventHandler(colorButtonsClick);
