@@ -1,111 +1,258 @@
+// // // using System;
+// // // using System.Collections.Generic;
+// // // using System.ComponentModel;
+// // // using System.Data;
+// // // using System.Drawing;
+// // // using System.Text;
+// // // using System.Windows.Forms;
+
+
+// // // // public class Form1 : Form {
+// // // //     private ToolStripContainer toolStripContainer1;
+// // // //     private ToolStrip toolStrip1;
+
+// // // //     public Form1() {
+// // // //         InitializeComponent();
+// // // //     }
+    
+// // // //     private void InitializeComponent() {
+// // // //         toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+// // // //         toolStrip1 = new System.Windows.Forms.ToolStrip();
+// // // //         // Add items to the ToolStrip.
+// // // //         toolStrip1.Items.Add("One");
+// // // //         toolStrip1.Items.Add("Two");
+// // // //         toolStrip1.Items.Add("Three");
+// // // //         // Add the ToolStrip to the top panel of the ToolStripContainer.
+// // // //         toolStripContainer1.TopToolStripPanel.Controls.Add(toolStrip1);
+// // // //         // Add the ToolStripContainer to the form.
+// // // //         Controls.Add(toolStripContainer1);
+// // // //     }
+
+// // // //     class Editor {
+// // // //     [STAThread]
+// // // //     static void Main() {
+// // // //         Form1 w = new Form1();
+// // // //         Application.Run(w);
+// // // //     }
+// // // // }
+// // // // }
+
+
+
+// // // // This code example demonstrates how to use ToolStripPanel
+// // // // controls with a multiple document interface (MDI).
+// // // public class Form1 : Form
+// // // {
+// // //     public Form1()
+// // //     {
+// // //         // Make the Form an MDI parent.
+// // //         this.IsMdiContainer = true;
+
+// // //         // Create ToolStripPanel controls.
+// // //         ToolStripPanel tspTop = new ToolStripPanel();
+// // //         ToolStripPanel tspBottom = new ToolStripPanel();
+// // //         ToolStripPanel tspLeft = new ToolStripPanel();
+// // //         ToolStripPanel tspRight = new ToolStripPanel();
+
+// // //         // Dock the ToolStripPanel controls to the edges of the form.
+// // //         tspTop.Dock = DockStyle.Top;
+// // //         tspBottom.Dock = DockStyle.Bottom;
+// // //         tspLeft.Dock = DockStyle.Left;
+// // //         tspRight.Dock = DockStyle.Right;
+
+// // //         // Create ToolStrip controls to move among the 
+// // //         // ToolStripPanel controls.
+
+// // //         // Create the "Top" ToolStrip control and add
+// // //         // to the corresponding ToolStripPanel.
+// // //         ToolStrip tsTop = new ToolStrip();
+// // //         tsTop.Items.Add("Top");
+// // //         tspTop.Join(tsTop);
+
+// // //         // Create the "Bottom" ToolStrip control and add
+// // //         // to the corresponding ToolStripPanel.
+// // //         ToolStrip tsBottom = new ToolStrip();
+// // //         tsBottom.Items.Add("Bottom");
+// // //         tspBottom.Join(tsBottom);
+
+// // //         // Create the "Right" ToolStrip control and add
+// // //         // to the corresponding ToolStripPanel.
+// // //         ToolStrip tsRight = new ToolStrip();
+// // //         tsRight.Items.Add("Right");
+// // //         tspRight.Join(tsRight);
+
+// // //         // Create the "Left" ToolStrip control and add
+// // //         // to the corresponding ToolStripPanel.
+// // //         ToolStrip tsLeft = new ToolStrip();
+// // //         tsLeft.Items.Add("Left");
+// // //         tspLeft.Join(tsLeft);
+
+// // //         // Create a MenuStrip control with a new window.
+// // //         MenuStrip ms = new MenuStrip();
+// // //         ToolStripMenuItem windowMenu = new ToolStripMenuItem("Window");
+// // //         ToolStripMenuItem windowNewMenu = new ToolStripMenuItem("New", null, new EventHandler(windowNewMenu_Click));
+// // //         windowMenu.DropDownItems.Add(windowNewMenu);
+// // //         ((ToolStripDropDownMenu)(windowMenu.DropDown)).ShowImageMargin = false;
+// // //         ((ToolStripDropDownMenu)(windowMenu.DropDown)).ShowCheckMargin = true;
+
+// // //         // Assign the ToolStripMenuItem that displays 
+// // //         // the list of child forms.
+// // //         ms.MdiWindowListItem = windowMenu;
+
+// // //         // Add the window ToolStripMenuItem to the MenuStrip.
+// // //         ms.Items.Add(windowMenu);
+
+// // //         // Dock the MenuStrip to the top of the form.
+// // //         ms.Dock = DockStyle.Top;
+
+// // //         // The Form.MainMenuStrip property determines the merge target.
+// // //         this.MainMenuStrip = ms;
+
+// // //         // Add the ToolStripPanels to the form in reverse order.
+// // //         this.Controls.Add(tspRight);
+// // //         this.Controls.Add(tspLeft);
+// // //         this.Controls.Add(tspBottom);
+// // //         this.Controls.Add(tspTop);
+
+// // //         // Add the MenuStrip last.
+// // //         // This is important for correct placement in the z-order.
+// // //         this.Controls.Add(ms);
+// // //     }
+
+// // //     // This event handler is invoked when 
+// // //     // the "New" ToolStripMenuItem is clicked.
+// // //     // It creates a new Form and sets its MdiParent 
+// // //     // property to the main form.
+// // //     void windowNewMenu_Click(object sender, EventArgs e)
+// // //     {
+// // //         Form f = new Form();
+// // //         f.MdiParent = this;
+// // //         f.Text = "Form - " + this.MdiChildren.Length.ToString();
+// // //         f.Show();
+// // //     }
+// // // }
+
+// // // class Editor {
+// // //     [STAThread]
+// // //     static void Main() {
+// // //         Form1 w = new Form1();
+// // //         Application.Run(w);
+// // //     }
+// // // }
+
+// // using System;
+// // using System.Collections.Generic;
+// // using System.ComponentModel;
+// // using System.Data;
+// // using System.Drawing;
+// // using System.Windows.Forms;
+
+// // namespace WindowsApplication11
+// // {
+// //     public class Form1 : Form
+// //     {
+// //         private ToolStripButton toolStripButton1;
+// //         private ToolStripButton toolStripButton2;
+// //         private ToolStrip toolStrip1;
+    
+// //         public Form1()
+// //         {
+// //             InitializeComponent();
+// //         }
+// //         [STAThread]
+// //         static void Main()
+// //         {
+// //             Application.EnableVisualStyles();
+// //             Application.Run(new Form1());
+// //         }
+
+// //         private void InitializeComponent()
+// //         {
+// //             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+// //             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+// //             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+// //             this.toolStrip1.SuspendLayout();
+// //             this.SuspendLayout();
+// //             // 
+// //             // toolStrip1
+// //             // 
+// //             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+// //             this.toolStripButton1,
+// //             this.toolStripButton2});
+// //             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+// //             this.toolStrip1.Name = "toolStrip1";
+// //             this.toolStrip1.TabIndex = 0;
+// //             this.toolStrip1.Text = "toolStrip1";
+// //             // 
+// //             // toolStripButton1
+// //             //
+// //             this.toolStripButton1.Image = Bitmap.FromFile("c:\\NewItem.bmp");
+// //             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+// //             this.toolStripButton1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+// //             this.toolStripButton1.Name = "toolStripButton1";
+// //             this.toolStripButton1.Text = "&New";
+// //             this.toolStripButton1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+// //             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+// //             // 
+// //             // toolStripButton2
+// //             // 
+// //             this.toolStripButton2.Image = Bitmap.FromFile("c:\\OpenItem.bmp");
+// //             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+// //             this.toolStripButton2.Name = "toolStripButton2";
+// //             this.toolStripButton2.Text = "&Open";
+// //             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+// //             // 
+// //             // Form1
+// //             // 
+// //             this.ClientSize = new System.Drawing.Size(292, 273);
+// //             this.Controls.Add(this.toolStrip1);
+// //             this.Name = "Form1";
+// //             this.toolStrip1.ResumeLayout(false);
+// //             this.ResumeLayout(false);
+// //             this.PerformLayout();
+// //         }
+
+// //         private void toolStripButton1_Click(object sender, EventArgs e)
+// //         {
+// //             MessageBox.Show("You have mail.");
+// //         }
+
+// //         private void toolStripButton2_Click(object sender, EventArgs e)
+// //         {
+// //             // Add the response to the Click event here.
+// //         }
+// //     }
+// // }
+
 // using System;
+// using System.Collections.Generic;
+// using System.ComponentModel;
+// using System.Data;
 // using System.Drawing;
-// using System.IO;
+// using System.Text;
 // using System.Windows.Forms;
 
-// public partial class Form1: Form
+// public class Form1 : Form
 // {
-//     internal RichTextBox RichTextBox1;
-//     internal Button Button1;
-//     internal RichTextBox RichTextBox2;
-//     internal Button Button2;
-//     internal SaveFileDialog SaveFileDialog1;
+//     private ToolStripContainer tsc;
+//     private RichTextBox rtb;
 
-//     public Form1() : base()
-//     {   
-//         this.RichTextBox1 = new RichTextBox();
-//         this.Button1 = new Button();
-//         this.RichTextBox2 = new RichTextBox();
-//         this.Button2 = new Button();
-//         this.SaveFileDialog1 = new SaveFileDialog();
-//         this.SuspendLayout();
-//         this.RichTextBox1.Location = new Point(24, 64);
-//         this.RichTextBox1.Name = "RichTextBox1";
-//         this.RichTextBox1.TabIndex = 0;
-//         this.RichTextBox1.Text = "Type something here.";
-//         this.Button1.Location = new Point(96, 16);
-//         this.Button1.Name = "Button1";
-//         this.Button1.Size = new Size(96, 24);
-//         this.Button1.TabIndex = 1;
-//         this.Button1.Text = "Save To Stream";
-//         this.Button1.Click += new EventHandler(Button1_Click);
-//         this.RichTextBox2.Location = new Point(152, 64);
-//         this.RichTextBox2.Name = "RichTextBox2";
-//         this.RichTextBox2.TabIndex = 3;
-//         this.RichTextBox2.Text = 
-//             "It will be added to the stream and appear here.";
-//         this.Button2.Location = new Point(104, 200);
-//         this.Button2.Name = "Button2";
-//         this.Button2.Size = new Size(88, 32);
-//         this.Button2.TabIndex = 4;
-//         this.Button2.Text = "Save Stream To File";
-//         this.Button2.Click += new EventHandler(Button2_Click);
-//         this.ClientSize = new Size(292, 266);
-//         this.Controls.Add(this.Button2);
-//         this.Controls.Add(this.RichTextBox2);
-//         this.Controls.Add(this.Button1);
-//         this.Controls.Add(this.RichTextBox1);
-//         this.Name = "Form1";
-//         this.Text = "Form1";
-//         this.ResumeLayout(false);
-//     }
-
-//     public static void Main()
+//     public Form1()
 //     {
+//         InitializeComponent();
+//     }    
+// [STAThread]
+// static void Main()
+//     {
+//         Application.EnableVisualStyles();
 //         Application.Run(new Form1());
 //     }
 
-//     // Declare a new memory stream.
-//     MemoryStream userInput = new MemoryStream();
-
-//     // Save the content of RichTextBox1 to the memory stream, 
-//     // appending a LineFeed character.  
-//     private void Button1_Click(Object sender, EventArgs e)
+//     private void InitializeComponent()
 //     {
-//         RichTextBox1.SaveFile(userInput, RichTextBoxStreamType.PlainText);
-//         userInput.WriteByte(13);
-
-//         // Display the entire contents of the stream,
-//         // by setting its position to 0, to RichTextBox2.
-//         userInput.Position = 0;
-//         RichTextBox2.LoadFile(userInput, RichTextBoxStreamType.PlainText);
-//     }
-
-//     // Shows the use of a SaveFileDialog to save a MemoryStream to a file.
-//     private void Button2_Click(Object sender, EventArgs e)
-//     {
-//         // Set the properties on SaveFileDialog1 so the user is 
-//         // prompted to create the file if it doesn't exist 
-//         // or overwrite the file if it does exist.
-//         SaveFileDialog1.CreatePrompt = true;
-//         SaveFileDialog1.OverwritePrompt = true;
-
-//         // Set the file name to myText.txt, set the type filter
-//         // to text files, and set the initial directory to the 
-//         // MyDocuments folder.
-//         SaveFileDialog1.FileName = "myText";
-//         // DefaultExt is only used when "All files" is selected from 
-//         // the filter box and no extension is specified by the user.
-//         SaveFileDialog1.DefaultExt = "txt";
-//         SaveFileDialog1.Filter = 
-//             "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-//         SaveFileDialog1.InitialDirectory = 
-//             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-//         // Call ShowDialog and check for a return value of DialogResult.OK,
-//         // which indicates that the file was saved. 
-//         DialogResult result = SaveFileDialog1.ShowDialog();
-//         Stream fileStream;
-
-//         if (result == DialogResult.OK)
-//         {
-//             // Open the file, copy the contents of memoryStream to fileStream,
-//             // and close fileStream. Set the memoryStream.Position value to 0 
-//             // to copy the entire stream. 
-//             fileStream = SaveFileDialog1.OpenFile();
-//             userInput.Position = 0;
-//             userInput.WriteTo(fileStream);
-//             fileStream.Close();
-//         }
+//         this.tsc = new System.Windows.Forms.ToolStripContainer();
+//         this.rtb = new System.Windows.Forms.RichTextBox();
+//         this.tsc.ContentPanel.Controls.Add(this.rtb);
+//         this.Controls.Add(this.tsc);
 //     }
 // }
