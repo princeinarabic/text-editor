@@ -27,8 +27,8 @@ public class Window : Form {
         textBox.Font = font;
         textBox.Multiline = true;
         textBox.Dock = DockStyle.Fill;
-        textBox.SelectionIndent = 20;
-        textBox.SelectionRightIndent = 20;
+        textBox.SelectionIndent = 30;
+        textBox.SelectionRightIndent = 30;
         Controls.Add(textBox);        
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
