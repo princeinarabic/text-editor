@@ -10,7 +10,7 @@ public class Window : Form {
     ToolStrip toolStrip;
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN, bulletListBTN;
-    ToolStripSeparator divide;
+    ToolStripSeparator bar;
     Font font;
 
     ToolStripDropDownButton headingsBTN;
@@ -21,14 +21,14 @@ public class Window : Form {
         ClientSize = new Size(500, 500);
         StartPosition = FormStartPosition.CenterScreen;
 
-        // font = new Font(FontFamily.GenericMonospace, 13);
-        font = new Font(FontFamily.GenericMonospace, 13, FontStyle.Regular);
+        font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Regular);
 
         textBox = new RichTextBox();
         textBox.Font = font;
         textBox.Multiline = true;
         textBox.Dock = DockStyle.Fill;
-        //textBox.SelectionBackColor = Color.Yellow;
+        textBox.SelectionIndent = 20;
+        textBox.SelectionRightIndent = 20;
         Controls.Add(textBox);        
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
@@ -70,25 +70,20 @@ public class Window : Form {
             textBox.SelectionAlignment = HorizontalAlignment.Center;
         else if (alignRightBTN.Checked)
             textBox.SelectionAlignment = HorizontalAlignment.Right;
+        else 
+            textBox.SelectionAlignment = HorizontalAlignment.Left;
     }
 
     // NEEDS TO BE FIXED, DOESN'T WORK PROPERLY. 
     void styleButtonChecked(object sender, EventArgs e) {
         if (boldBTN.Checked) 
-            textBox.Font = new Font(FontFamily.GenericMonospace, 13, FontStyle.Bold);
+            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Bold);
         else if (italicBTN.Checked)
-            textBox.Font = new Font(FontFamily.GenericMonospace, 13, FontStyle.Italic);
+            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Italic);
         else if (underlineBTN.Checked)
-            textBox.Font = new Font(FontFamily.GenericMonospace, 13, FontStyle.Underline);
+            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Underline);
         else
             textBox.Font = font;
-    }
-
-    // Handle the buttons' click event by setting the foreground color of the
-    // form to the foreground color of the button that is clicked.
-    void colorButtonsClick(object sender, EventArgs e) {
-        ToolStripButton senderButton = (ToolStripButton) sender;
-        this.ForeColor = senderButton.ForeColor;
     }
 
     void buttonActions() {
@@ -99,10 +94,6 @@ public class Window : Form {
         alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
         alignCenterBTN.Click += new EventHandler(alignmentButtonChecked);
         alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
-
-        heading2BTN.Click += new EventHandler(colorButtonsClick);
-        heading1BTN.Click += new EventHandler(colorButtonsClick);
-        heading3BTN.Click += new EventHandler(colorButtonsClick);
     }
 
     ToolStripButton iconButton(string name) {
@@ -112,14 +103,15 @@ public class Window : Form {
     }
 
     void addSeparator() {
-        divide = new ToolStripSeparator();
-        toolStrip.Items.Add(divide);
+        bar = new ToolStripSeparator();
+        toolStrip.Items.Add(bar);
     }
 
     void initIcons() {
         this.boldBTN = iconButton("Bold_16x");  // iconButton method is self written
         this.italicBTN = iconButton("Italic_16x");
         this.underlineBTN = iconButton("Underline_16x");
+
         this.alignLeftBTN = iconButton("AlignLeft_16x");
         this.alignCenterBTN = iconButton("AlignCenter_16x");
         this.alignRightBTN = iconButton("AlignRight_16x");
