@@ -31,7 +31,7 @@ public class Window : Form {
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
         Initializes a new instance of the ToolStripMenuItem class that displays the specified text 
-        and image and that does the specified action when the ToolStripMenuItem is clicked. */
+        and image and that does the specified action when the ToolStripMenuItem is clicked */
         ToolStripMenuItem[] fileItems = {
             new ToolStripMenuItem("Open", null, onOpen),
             new ToolStripMenuItem("Quit", null, onQuit),
@@ -65,7 +65,7 @@ public class Window : Form {
         if (bulletListBTN.Checked)
             textBox.SelectionBullet = true;
     }
-    
+
     void alignmentButtonChecked(object sender, EventArgs e) {
         if (alignLeftBTN.Checked)
             textBox.SelectionAlignment = HorizontalAlignment.Left;
