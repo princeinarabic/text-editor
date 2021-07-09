@@ -16,7 +16,7 @@ public class Window : Form {
     ToolStripDropDownButton headingsBTN;
     ToolStripDropDown dropDown;
     ToolStripButton heading1BTN, heading2BTN, heading3BTN;
-    TextRange range;
+    //TextRange range;
 
     public Window() {
         ClientSize = new Size(500, 500);
@@ -28,7 +28,6 @@ public class Window : Form {
         textBox.Font = font;
         textBox.Multiline = true;
         textBox.Dock = DockStyle.Fill;
-        textBox.SelectionHangingIndent = 20;
         Controls.Add(textBox);        
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
@@ -81,13 +80,12 @@ public class Window : Form {
 
     // NEEDS TO BE FIXED, DOESN'T WORK PROPERLY. 
     void styleButtonChecked(object sender, EventArgs e) {
-        range = new TextRange(textBox.Document.ContentStart, textBox.Document.ContentEnd);
+        //range = new TextRange(textBox.Document.ContentStart, textBox.Document.ContentEnd);
 
         // range.Select(textBox.Document.Blocks.FirstBlock.ContentStart, 
         //             textBox.Document.Blocks.FirstBlock.ContentEnd);
         if (boldBTN.Checked) 
-            range.Select(textBox.Document.Blocks.FirstBlock.ContentStart, 
-                    textBox.Document.Blocks.FirstBlock.ContentEnd).Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Bold);
+            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Bold);
         else if (italicBTN.Checked)
             textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Italic);
         else if (underlineBTN.Checked)
@@ -99,7 +97,6 @@ public class Window : Form {
     // CHANGE THIS SO THAT WHICHEVER HEADING BUTTON IS PRESSED IS SHOWN 
     // void colorButtonsClick(object sender, EventArgs e) {
     //     ToolStripButton senderButton = (ToolStripButton) sender;
-    //     //this.ForeColor = senderButton.ForeColor;
     //     this.headingsBTN = (ToolStripDropDownButton) senderButton;
     // }
 
