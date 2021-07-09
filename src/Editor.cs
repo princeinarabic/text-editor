@@ -27,8 +27,6 @@ public class Window : Form {
         textBox.Font = font;
         textBox.Multiline = true;
         textBox.Dock = DockStyle.Fill;
-        textBox.SelectionIndent = 30;
-        textBox.SelectionRightIndent = 30;
         Controls.Add(textBox);        
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
@@ -63,6 +61,11 @@ public class Window : Form {
         Controls.Add(menuStrip);         // because whatever is added last goes on top.
     }
 
+    void bulletButtonChecked(object sender, EventArgs e) {
+        if (bulletListBTN.Checked)
+            textBox.SelectionBullet = true;
+    }
+    
     void alignmentButtonChecked(object sender, EventArgs e) {
         if (alignLeftBTN.Checked)
             textBox.SelectionAlignment = HorizontalAlignment.Left;
@@ -94,6 +97,8 @@ public class Window : Form {
         alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
         alignCenterBTN.Click += new EventHandler(alignmentButtonChecked);
         alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
+
+        bulletListBTN.Click += new EventHandler(bulletButtonChecked);
     }
 
     ToolStripButton iconButton(string name) {
