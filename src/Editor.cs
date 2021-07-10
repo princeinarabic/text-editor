@@ -22,12 +22,14 @@ public class Window : Form {
         ClientSize = new Size(500, 500);
         StartPosition = FormStartPosition.CenterScreen;
 
-        font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Regular);
+        font = new Font("Arial", 11, FontStyle.Regular);
 
         textBox = new RichTextBox();
         textBox.Font = font;
         textBox.Multiline = true;
         textBox.Dock = DockStyle.Fill;
+        textBox.ShowSelectionMargin = true;
+        textBox.SelectionRightIndent = 7;
         Controls.Add(textBox);        
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
@@ -55,7 +57,7 @@ public class Window : Form {
         initIcons();
         buttonActions();
 
-        toolStrip.Dock = DockStyle.Top;  // ToolStrip is just a "strip" to which different tools are added e.g. buttons.
+        toolStrip.Dock = DockStyle.Top;  
         Controls.Add(toolStrip);
 
         menuStrip.Dock = DockStyle.Top;  // adding it after toolStrip to make the menu on top of buttons
@@ -80,25 +82,15 @@ public class Window : Form {
 
     // NEEDS TO BE FIXED, DOESN'T WORK PROPERLY. 
     void styleButtonChecked(object sender, EventArgs e) {
-        //range = new TextRange(textBox.Document.ContentStart, textBox.Document.ContentEnd);
-
-        // range.Select(textBox.Document.Blocks.FirstBlock.ContentStart, 
-        //             textBox.Document.Blocks.FirstBlock.ContentEnd);
         if (boldBTN.Checked) 
-            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Bold);
+            textBox.Font = new Font("Arial", 11, FontStyle.Bold);
         else if (italicBTN.Checked)
-            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Italic);
+            textBox.Font = new Font("Arial", 11, FontStyle.Italic);
         else if (underlineBTN.Checked)
-            textBox.Font = new Font(FontFamily.GenericMonospace, 11, FontStyle.Underline);
+            textBox.Font = new Font("Arial", 11, FontStyle.Underline);
         else
             textBox.Font = font;
     }
-
-    // CHANGE THIS SO THAT WHICHEVER HEADING BUTTON IS PRESSED IS SHOWN 
-    // void colorButtonsClick(object sender, EventArgs e) {
-    //     ToolStripButton senderButton = (ToolStripButton) sender;
-    //     this.headingsBTN = (ToolStripDropDownButton) senderButton;
-    // }
 
     void buttonActions() {
         boldBTN.Click += new EventHandler(styleButtonChecked);
@@ -114,7 +106,8 @@ public class Window : Form {
 
     ToolStripButton iconButton(string name) {
         ToolStripButton b = new ToolStripButton();
-        b.Image = Bitmap.FromFile(Path.Combine("C:/Users/Chyngyz/Documents/text-editor-/icons", name + ".png"));
+        b.Image = Bitmap.FromFile(
+                    Path.Combine("C:/Users/Chyngyz/Documents/text-editor-/icons", name + ".png"));
         return b;
     }
 
@@ -151,13 +144,9 @@ public class Window : Form {
 
         // Set the drop-down on the ToolStripDropDownButton.
         this.headingsBTN.DropDown = dropDown;
-        // Set the drop-down direction.
         this.headingsBTN.DropDownDirection = ToolStripDropDownDirection.Right;
-        // Do not show a drop-down arrow.
         this.headingsBTN.ShowDropDownArrow = true;
 
-        // Declare three buttons, set their foreground color and text, 
-        // and add the buttons to the drop-down.
         this.heading1BTN = iconButton("HeadingOne_16x");
         this.heading2BTN = iconButton("HeadingTwo_16x");
         this.heading3BTN = iconButton("HeadingThree_16x");
@@ -166,23 +155,24 @@ public class Window : Form {
             { heading1BTN, heading2BTN, heading3BTN });
         toolStrip.Items.Add(headingsBTN);
     }
-
+                                                
     void loadFile(string filename) {
-        string text = "";
+        string text = "";                                   
 
         using (StreamReader sr = new StreamReader(filename))
             while (sr.ReadLine() is string s)
-                text += s + "\n";
-        
-        textBox.Text = text;
-    }
+                text += s + "\n";           
+
+        textBox.Text = text;                    
+    }                                                       
 
     void savingFile(string filename) {
         // Save the contents of the RichTextBox into the file.
         textBox.SaveFile(filename, RichTextBoxStreamType.PlainText);
-        MessageBox.Show("Saved Successfully", "File address: " + filename, MessageBoxButtons.OK, MessageBoxIcon.Information);
-    }
-    
+        MessageBox.Show("Saved Successfully", "File address: " + 
+                        filename, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }                                           
+
     /* The OpenFileDialog component allows users to browse  the folders of their computer or any computer on the 
     network and select one or more files to open. The dialog box returns the path and name of the file the 
     user selected in the dialog box. The FileName property  can be set prior to showing the dialog box */   
@@ -191,7 +181,7 @@ public class Window : Form {
             if (dialog.ShowDialog() == DialogResult.OK)
                 loadFile(dialog.FileName);
         }
-    }
+    }                                   
 
     void onSave(object sender, EventArgs e) {
         using (var saveFile = new SaveFileDialog()) {
