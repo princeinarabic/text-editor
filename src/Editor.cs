@@ -143,7 +143,7 @@ public class Window : Form {
     ToolStripButton iconButton(string name) {
         ToolStripButton b = new ToolStripButton();
         b.Image = Bitmap.FromFile(
-                    Path.Combine("C:/Users/Chyngyz/Documents/clone-proj/text-editor/icons", name + ".png"));
+                    Path.Combine("../src/icons", name + ".png"));
         return b;
     }
 

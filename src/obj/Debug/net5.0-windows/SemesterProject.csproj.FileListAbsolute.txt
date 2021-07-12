@@ -1,0 +1,16 @@
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\SemesterProject.exe
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\SemesterProject.deps.json
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\SemesterProject.runtimeconfig.json
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\SemesterProject.runtimeconfig.dev.json
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\SemesterProject.dll
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\ref\SemesterProject.dll
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\bin\Debug\net5.0-windows\SemesterProject.pdb
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.csprojAssemblyReference.cache
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.AssemblyInfoInputs.cache
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.AssemblyInfo.cs
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.csproj.CoreCompileInputs.cache
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.dll
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\ref\SemesterProject.dll
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.pdb
+C:\Users\Chyngyz\Documents\clone-proj\text-editor\src\obj\Debug\net5.0-windows\SemesterProject.genruntimeconfig.cache
