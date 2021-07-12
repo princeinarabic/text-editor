@@ -2,8 +2,8 @@ using System;
 using static System.Console;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 using System.Windows;
+using System.Windows.Forms;
 
 public class Window : Form {
     RichTextBox textBox;
@@ -11,12 +11,11 @@ public class Window : Form {
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN, bulletListBTN;
     ToolStripSeparator bar;
-    Font font;
+    Font font, heading1Font, heading2Font, heading3Font;
 
     ToolStripDropDownButton headingsBTN;
     ToolStripDropDown dropDown;
     ToolStripButton heading1BTN, heading2BTN, heading3BTN;
-    //TextRange range;
 
     public Window() {
         ClientSize = new Size(500, 500);
@@ -30,7 +29,8 @@ public class Window : Form {
         textBox.Dock = DockStyle.Fill;
         textBox.ShowSelectionMargin = true;
         textBox.SelectionRightIndent = 7;
-        Controls.Add(textBox);        
+        textBox.BackColor = Color.OldLace;  // Moccasin  Wheat  OldLace MintCream
+        Controls.Add(textBox);         
 
         /* ToolStripMenuItem(String, Image, EventHandler)	
         Initializes a new instance of the ToolStripMenuItem class that displays the specified text 
@@ -46,13 +46,14 @@ public class Window : Form {
         };
         
         MenuStrip menuStrip = new MenuStrip();
-        menuStrip.BackColor = Color.SkyBlue;  
+        menuStrip.BackColor = Color.BurlyWood;  //CadetBlue
 
         foreach (var item in topItems)
             menuStrip.Items.Add(item);
         
         this.toolStrip = new ToolStrip();
         toolStrip.GripStyle = ToolStripGripStyle.Hidden;  // hides the "grip" which are three dots you use to move the buttons
+        toolStrip.BackColor = Color.LightGreen;  //MediumPurple
 
         initIcons();
         buttonActions();
@@ -80,34 +81,69 @@ public class Window : Form {
             textBox.SelectionAlignment = HorizontalAlignment.Left;
     }
 
+    FontStyle newFontStyle;  // build error when put within ToggleFont()
+    void ToggleFontStyle(string t) {
+        if (textBox.SelectionFont != null) {
+            Font currentFont = textBox.SelectionFont;
+        
+            if (textBox.SelectionFont.Bold == true) {
+                boldBTN.Checked = false;
+                newFontStyle = FontStyle.Regular;
+            }
+            else if (textBox.SelectionFont.Italic == true) {
+                newFontStyle = FontStyle.Regular;
+            }
+            else if (textBox.SelectionFont.Underline == true) {
+                newFontStyle = FontStyle.Regular;
+            }
+            else {
+                if (t == "Bold") {
+                    newFontStyle = FontStyle.Bold;
+                }
+                else if (t == "Italic") {
+                    newFontStyle = FontStyle.Italic;
+                }
+                else if (t == "Underline") {
+                    newFontStyle = FontStyle.Underline;  
+                }
+            }
+
+            textBox.SelectionFont = new Font(
+                "Arial", 
+                11, 
+                newFontStyle
+            );
+        }
+    }
+
     // NEEDS TO BE FIXED, DOESN'T WORK PROPERLY. 
     void styleButtonChecked(object sender, EventArgs e) {
         if (boldBTN.Checked) 
-            textBox.Font = new Font("Arial", 11, FontStyle.Bold);
+            ToggleFontStyle("Bold");
         else if (italicBTN.Checked)
-            textBox.Font = new Font("Arial", 11, FontStyle.Italic);
+            ToggleFontStyle("Italic");
         else if (underlineBTN.Checked)
-            textBox.Font = new Font("Arial", 11, FontStyle.Underline);
-        else
-            textBox.Font = font;
+            ToggleFontStyle("Underline");
+        // else
+        //     textBox.Font = font;
     }
 
     void buttonActions() {
-        boldBTN.Click += new EventHandler(styleButtonChecked);
-        italicBTN.Click += new EventHandler(styleButtonChecked);
-        underlineBTN.Click += new EventHandler(styleButtonChecked);
+        boldBTN.Click += styleButtonChecked;
+        italicBTN.Click += styleButtonChecked;
+        underlineBTN.Click += styleButtonChecked;
 
-        alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
-        alignCenterBTN.Click += new EventHandler(alignmentButtonChecked);
-        alignRightBTN.Click += new EventHandler(alignmentButtonChecked);
+        alignRightBTN.Click += alignmentButtonChecked;
+        alignCenterBTN.Click += alignmentButtonChecked;
+        alignRightBTN.Click += alignmentButtonChecked;
 
-        bulletListBTN.Click += new EventHandler(bulletButtonChecked);
+        bulletListBTN.Click += bulletButtonChecked;
     }
 
     ToolStripButton iconButton(string name) {
         ToolStripButton b = new ToolStripButton();
         b.Image = Bitmap.FromFile(
-                    Path.Combine("C:/Users/Chyngyz/Documents/text-editor-/icons", name + ".png"));
+                    Path.Combine("C:/Users/Chyngyz/Documents/clone-proj/text-editor/icons", name + ".png"));
         return b;
     }
 
@@ -126,9 +162,14 @@ public class Window : Form {
         this.alignRightBTN = iconButton("AlignRight_16x");
         this.bulletListBTN = iconButton("BulletList_16x");
 
+        this.heading1BTN = iconButton("HeadingOne_16x");
+        this.heading2BTN = iconButton("HeadingTwo_16x");
+        this.heading3BTN = iconButton("HeadingThree_16x");
+
         boldBTN.CheckOnClick = italicBTN.CheckOnClick = underlineBTN.CheckOnClick = true;
         alignLeftBTN.CheckOnClick = alignCenterBTN.CheckOnClick = alignRightBTN.CheckOnClick = true;
         bulletListBTN.CheckOnClick = true;
+        heading1BTN.CheckOnClick = heading2BTN.CheckOnClick = heading3BTN.CheckOnClick = true;
 
         toolStrip.Items.Add(boldBTN); toolStrip.Items.Add(italicBTN); toolStrip.Items.Add(underlineBTN);
         addSeparator();
@@ -146,10 +187,6 @@ public class Window : Form {
         this.headingsBTN.DropDown = dropDown;
         this.headingsBTN.DropDownDirection = ToolStripDropDownDirection.Right;
         this.headingsBTN.ShowDropDownArrow = true;
-
-        this.heading1BTN = iconButton("HeadingOne_16x");
-        this.heading2BTN = iconButton("HeadingTwo_16x");
-        this.heading3BTN = iconButton("HeadingThree_16x");
 
         dropDown.Items.AddRange(new ToolStripItem[] 
             { heading1BTN, heading2BTN, heading3BTN });
@@ -199,7 +236,7 @@ public class Window : Form {
     }
 }
 
-class Editor {
+ class Editor {
     [STAThread]
     static void Main() {
         Window w = new Window();
