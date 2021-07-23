@@ -38,11 +38,24 @@ public class Window : Form {
         ToolStripMenuItem[] fileItems = {
             new ToolStripMenuItem("Open", null, onOpen),
             new ToolStripMenuItem("Quit", null, onQuit),
-            new ToolStripMenuItem("Save", null, onSave)
+            new ToolStripMenuItem("Save", null, onSave),
         };
-                
+
+        ToolStripMenuItem[] editItems = {
+            new ToolStripMenuItem("Undo", null, onUndo),
+            new ToolStripMenuItem("Redo", null, onRedo),
+            new ToolStripMenuItem("Select All", null, onSelectAll)
+        };
+
+        ToolStripMenuItem[] fontItems = {
+            new ToolStripMenuItem("Choose Font", null, onChooseFont),
+        };
+        
+
         ToolStripMenuItem[] topItems = {
             new ToolStripMenuItem("File", null, fileItems),
+            new ToolStripMenuItem("Edit", null, editItems),
+            new ToolStripMenuItem("Font", null, fontItems)
         };
         
         MenuStrip menuStrip = new MenuStrip();
@@ -179,7 +192,6 @@ public class Window : Form {
         toolStrip.Items.Add(bulletListBTN); 
         addSeparator();
 
-        // This part forms the drop down button which contains headings buttons.
         this.headingsBTN = new ToolStripDropDownButton();
         this.dropDown = new ToolStripDropDown();
         this.headingsBTN.Text = "Headings";
@@ -203,13 +215,7 @@ public class Window : Form {
 
         textBox.Text = text;                    
     }                                                       
-
-    void savingFile(string filename) {
-        textBox.SaveFile(filename, RichTextBoxStreamType.PlainText);
-        MessageBox.Show("Saved Successfully", "File address: " + 
-                        filename, MessageBoxButtons.OK, MessageBoxIcon.Information);
-    }                                           
-
+                                         
     /* The OpenFileDialog component allows users to browse  the folders of their computer or any computer on the 
     network and select one or more files to open. The dialog box returns the path and name of the file the 
     user selected in the dialog box. The FileName property  can be set prior to showing the dialog box */   
@@ -218,17 +224,62 @@ public class Window : Form {
             if (dialog.ShowDialog() == DialogResult.OK)
                 loadFile(dialog.FileName);
         }
-    }                                   
+    }                 
 
-    void onSave(object sender, EventArgs e) {
-        using (var saveFile = new SaveFileDialog()) {
-            // Initialize the SaveFileDialog to specify the RTF extension for the file.
-            saveFile.DefaultExt = "*.txt";
-            saveFile.Filter = "TXT Files|*.txt";
-            if (saveFile.ShowDialog() == DialogResult.OK && saveFile.FileName.Length > 0) {
-                savingFile(saveFile.FileName);
-            }
-        }
+    void onSave(object sender, EventArgs e) {  
+        SaveFileDialog saveFile = new SaveFileDialog();
+        saveFile.Title = "Save File";  
+        saveFile.DefaultExt = "rtf";  // rich text format  
+        saveFile.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|HTML Files|*.htm|All Files|*.*";  
+        saveFile.FilterIndex = 1;  
+        saveFile.ShowDialog();  
+
+        if (saveFile.FileName == "")
+            return;
+
+        string strExt;  
+        strExt = System.IO.Path.GetExtension(saveFile.FileName);  
+        strExt = strExt.ToUpper();  
+        if (strExt == ".RTF") 
+            textBox.SaveFile(saveFile.FileName, RichTextBoxStreamType.RichText);   
+        else {  
+            System.IO.StreamWriter textWriter;  
+            textWriter = new System.IO.StreamWriter(saveFile.FileName);  
+            textWriter.Write(textBox.Text);  
+            textWriter.Close();  
+            textWriter = null;  
+            textBox.SelectionStart = 0;  
+            textBox.SelectionLength = 0;  
+        }  
+        string currentFile = saveFile.FileName;  
+        textBox.Modified = false;  
+        this.Text = "Editor: " + currentFile.ToString();
+        MessageBox.Show("Saved Successfully", "File address: " + 
+                        currentFile, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    } 
+
+    void onChooseFont(object sender, EventArgs e) {
+        FontDialog fg = new FontDialog();
+        if ( textBox.SelectionFont != null) 
+            fg.Font = textBox.SelectionFont;
+        else 
+            fg.Font = null;  
+        fg.ShowApply = true;  
+
+        if (fg.ShowDialog() == DialogResult.OK)  
+            textBox.SelectionFont = fg.Font;  
+    }
+
+    void onSelectAll(object sender, EventArgs e) => textBox.SelectAll();  
+
+    void onUndo(object sender, EventArgs e) {
+        if (textBox.CanUndo)   
+            textBox.Undo();  
+    }
+
+    void onRedo(object sender, EventArgs e) {
+        if (textBox.CanRedo) 
+            textBox.Redo();
     }
 
     void onQuit(object sender, EventArgs e) {
