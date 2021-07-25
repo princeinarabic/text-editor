@@ -245,9 +245,6 @@ public class Window : Form {
             textWriter = new StreamWriter(saveFile.FileName);  
             textWriter.Write(textBox.Text);  
             textWriter.Close();  
-            textWriter = null;  
-            textBox.SelectionStart = 0;  
-            textBox.SelectionLength = 0;  
         }  
         string currentFile = saveFile.FileName;  
         textBox.Modified = false;  
