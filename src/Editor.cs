@@ -1,5 +1,4 @@
 using System;
-using static System.Console;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -28,7 +27,7 @@ public class Window : Form {
         
         this.toolStrip = new ToolStrip();
         toolStrip.GripStyle = ToolStripGripStyle.Hidden;  // hides the "grip" which are three dots you use to move the buttons
-        toolStrip.BackColor = Color.LightGreen;  //MediumPurple
+        toolStrip.BackColor = Color.LightGreen;  
         
         initIcons();
         buttonActions();
@@ -77,7 +76,6 @@ public class Window : Form {
             new ToolStripMenuItem("Choose Font", null, onChooseFont),
         };
         
-
         ToolStripMenuItem[] topItems = {
             new ToolStripMenuItem("File", null, fileItems),
             new ToolStripMenuItem("Edit", null, editItems),
@@ -91,7 +89,7 @@ public class Window : Form {
             menuStrip.Items.Add(item);
     }
 
-    FontStyle newBoldFont;  // build error when put within ToggleFontStyle()
+    FontStyle newBoldFont;  
     void boldBTN_Click(object sender, EventArgs e) {
         if (textBox.SelectionFont != null) {
             Font currentFont = textBox.SelectionFont;
@@ -295,7 +293,7 @@ public class Window : Form {
     void onQuit(object sender, EventArgs e) {
         if (textBox.Modified) {  
             DialogResult answer;  
-            answer = MessageBox.Show("The document has not been saved, would you like to continue without saving?", 
+            answer = MessageBox.Show("The document has not been saved, continue without saving?", 
                                     "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question);  
             if (answer == DialogResult.No)  
                 return;  
