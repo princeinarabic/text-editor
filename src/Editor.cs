@@ -8,61 +8,23 @@ using System.Windows.Forms;
 public class Window : Form {
     RichTextBox textBox;
     ToolStrip toolStrip;
+    MenuStrip menuStrip;
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
-    ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN, bulletListBTN;
+    ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
+    ToolStripButton colorDialogBTN, bulletListBTN;
     ToolStripSeparator bar;
-
-    ToolStripDropDownButton headingsBTN;
-    ToolStripDropDown dropDown;
-    ToolStripButton heading1BTN, heading2BTN, heading3BTN;
-    Font font, heading1Font, heading2Font, heading3Font;
+    Font font; 
 
     public Window() {
         ClientSize = new Size(500, 500);
         StartPosition = FormStartPosition.CenterScreen;
 
         initFonts();
-
         textBox = new RichTextBox();
-        textBox.Font = font;
-        textBox.Multiline = true;
-        textBox.Dock = DockStyle.Fill;
-        textBox.ShowSelectionMargin = true;
-        textBox.SelectionRightIndent = 7;
-        textBox.BackColor = Color.OldLace;  
+        textboxFeatures();
         Controls.Add(textBox);         
 
-        /* ToolStripMenuItem(String, Image, EventHandler)	
-        Initializes a new instance of the ToolStripMenuItem class that displays the specified text 
-        and image and that does the specified action when the ToolStripMenuItem is clicked */
-        ToolStripMenuItem[] fileItems = {
-            new ToolStripMenuItem("Open", null, onOpen),
-            new ToolStripMenuItem("Quit", null, onQuit),
-            new ToolStripMenuItem("Save", null, onSave),
-        };
-
-        ToolStripMenuItem[] editItems = {
-            new ToolStripMenuItem("Undo", null, onUndo),
-            new ToolStripMenuItem("Redo", null, onRedo),
-            new ToolStripMenuItem("Select All", null, onSelectAll)
-        };
-
-        ToolStripMenuItem[] fontItems = {
-            new ToolStripMenuItem("Choose Font", null, onChooseFont),
-        };
-        
-
-        ToolStripMenuItem[] topItems = {
-            new ToolStripMenuItem("File", null, fileItems),
-            new ToolStripMenuItem("Edit", null, editItems),
-            new ToolStripMenuItem("Font", null, fontItems)
-        };
-        
-        MenuStrip menuStrip = new MenuStrip();
-        menuStrip.BackColor = Color.BurlyWood;  //CadetBlue
-
-        foreach (var item in topItems)
-            menuStrip.Items.Add(item);
+        initMenuStrip();
         
         this.toolStrip = new ToolStrip();
         toolStrip.GripStyle = ToolStripGripStyle.Hidden;  // hides the "grip" which are three dots you use to move the buttons
@@ -80,9 +42,53 @@ public class Window : Form {
 
     void initFonts() {
         font = new Font("Arial", 11, FontStyle.Regular);
-        heading1Font = new Font("Arial", 20, FontStyle.Bold);
-        heading2Font = new Font("Arial", 18, FontStyle.Bold);
-        heading3Font = new Font("Arial", 16, FontStyle.Bold);
+    }
+
+    void textboxFeatures() {
+        textBox.Font = font;
+        textBox.Multiline = true;
+        textBox.Dock = DockStyle.Fill;
+        textBox.ShowSelectionMargin = true;
+        textBox.SelectionRightIndent = 7;
+        textBox.BackColor = Color.OldLace;
+        textBox.AcceptsTab = true;
+        textBox.ShortcutsEnabled = true;  
+    }
+
+    void initMenuStrip() {
+        /* ToolStripMenuItem(String, Image, EventHandler)	
+        Initializes a new instance of the ToolStripMenuItem class that displays the specified text 
+        and image and that does the specified action when the ToolStripMenuItem is clicked */
+        ToolStripMenuItem[] fileItems = {
+            new ToolStripMenuItem("Open", null, onOpen),
+            new ToolStripMenuItem("Quit", null, onQuit),
+            new ToolStripMenuItem("Save", null, onSave),
+        };
+
+        ToolStripMenuItem[] editItems = {
+            new ToolStripMenuItem("Undo", null, onUndo),
+            new ToolStripMenuItem("Redo", null, onRedo),
+            new ToolStripMenuItem("Select All", null, onSelectAll),
+            new ToolStripMenuItem("Paste", null, onPaste),
+            new ToolStripMenuItem("Cut", null, onCut),
+        };
+
+        ToolStripMenuItem[] fontItems = {
+            new ToolStripMenuItem("Choose Font", null, onChooseFont),
+        };
+        
+
+        ToolStripMenuItem[] topItems = {
+            new ToolStripMenuItem("File", null, fileItems),
+            new ToolStripMenuItem("Edit", null, editItems),
+            new ToolStripMenuItem("Font", null, fontItems)
+        };
+        
+        menuStrip = new MenuStrip();
+        menuStrip.BackColor = Color.BurlyWood;  
+
+        foreach (var item in topItems)
+            menuStrip.Items.Add(item);
     }
 
     FontStyle newBoldFont;  // build error when put within ToggleFontStyle()
@@ -108,6 +114,7 @@ public class Window : Form {
                 newItalicFont = FontStyle.Regular;
             else    
                 newItalicFont = FontStyle.Italic;
+
             textBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newItalicFont);
         }
     }
@@ -142,6 +149,13 @@ public class Window : Form {
             textBox.SelectionAlignment = HorizontalAlignment.Left;
     }
 
+    void colorDialogBTN_Click(object sender, EventArgs e) {
+        ColorDialog cd = new ColorDialog();
+        cd.Color = textBox.ForeColor;  
+        if (cd.ShowDialog() == DialogResult.OK)  
+            textBox.SelectionColor = cd.Color; 
+    }
+
     void buttonActions() {
         boldBTN.Click += boldBTN_Click;
         italicBTN.Click += italicBTN_Click;
@@ -152,6 +166,7 @@ public class Window : Form {
         alignRightBTN.Click += alignmentButtonChecked;
 
         bulletListBTN.Click += bulletButtonChecked;
+        colorDialogBTN.Click += colorDialogBTN_Click;
     }
 
     ToolStripButton iconButton(string name) {
@@ -174,16 +189,13 @@ public class Window : Form {
         this.alignLeftBTN = iconButton("AlignLeft_16x");
         this.alignCenterBTN = iconButton("AlignCenter_16x");
         this.alignRightBTN = iconButton("AlignRight_16x");
-        this.bulletListBTN = iconButton("BulletList_16x");
 
-        this.heading1BTN = iconButton("HeadingOne_16x");
-        this.heading2BTN = iconButton("HeadingTwo_16x");
-        this.heading3BTN = iconButton("HeadingThree_16x");
+        this.bulletListBTN = iconButton("BulletList_16x");
+        this.colorDialogBTN = iconButton("ColorDialog_16x");
 
         boldBTN.CheckOnClick = italicBTN.CheckOnClick = underlineBTN.CheckOnClick = true;
         alignLeftBTN.CheckOnClick = alignCenterBTN.CheckOnClick = alignRightBTN.CheckOnClick = true;
-        bulletListBTN.CheckOnClick = true;
-        heading1BTN.CheckOnClick = heading2BTN.CheckOnClick = heading3BTN.CheckOnClick = true;
+        bulletListBTN.CheckOnClick = colorDialogBTN.CheckOnClick = true;
 
         toolStrip.Items.Add(boldBTN); toolStrip.Items.Add(italicBTN); toolStrip.Items.Add(underlineBTN);
         addSeparator();
@@ -191,21 +203,9 @@ public class Window : Form {
         addSeparator();
         toolStrip.Items.Add(bulletListBTN); 
         addSeparator();
-
-        this.headingsBTN = new ToolStripDropDownButton();
-        this.dropDown = new ToolStripDropDown();
-        this.headingsBTN.Text = "Headings";
-
-        // Set the drop-down on the ToolStripDropDownButton.
-        this.headingsBTN.DropDown = dropDown;
-        this.headingsBTN.DropDownDirection = ToolStripDropDownDirection.Right;
-        this.headingsBTN.ShowDropDownArrow = true;
-
-        dropDown.Items.AddRange(new ToolStripItem[] 
-            { heading1BTN, heading2BTN, heading3BTN });
-        toolStrip.Items.Add(headingsBTN);
+        toolStrip.Items.Add(colorDialogBTN);
     }
-                                                
+
     void loadFile(string filename) {
         string text = "";                                   
 
@@ -243,8 +243,8 @@ public class Window : Form {
         if (strExt == ".RTF") 
             textBox.SaveFile(saveFile.FileName, RichTextBoxStreamType.RichText);   
         else {  
-            System.IO.StreamWriter textWriter;  
-            textWriter = new System.IO.StreamWriter(saveFile.FileName);  
+            StreamWriter textWriter;  
+            textWriter = new StreamWriter(saveFile.FileName);  
             textWriter.Write(textBox.Text);  
             textWriter.Close();  
             textWriter = null;  
@@ -259,15 +259,15 @@ public class Window : Form {
     } 
 
     void onChooseFont(object sender, EventArgs e) {
-        FontDialog fg = new FontDialog();
+        FontDialog fd = new FontDialog();
         if ( textBox.SelectionFont != null) 
-            fg.Font = textBox.SelectionFont;
+            fd.Font = textBox.SelectionFont;
         else 
-            fg.Font = null;  
-        fg.ShowApply = true;  
+            fd.Font = null;  
+        fd.ShowApply = true;  
 
-        if (fg.ShowDialog() == DialogResult.OK)  
-            textBox.SelectionFont = fg.Font;  
+        if (fd.ShowDialog() == DialogResult.OK)  
+            textBox.SelectionFont = fd.Font;  
     }
 
     void onSelectAll(object sender, EventArgs e) => textBox.SelectAll();  
@@ -282,8 +282,28 @@ public class Window : Form {
             textBox.Redo();
     }
 
+    void onPaste(object sender, EventArgs e) {
+        if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text))  
+            textBox.Paste();  
+    }
+
+    void onCut(object sender, EventArgs e) {
+        if (textBox.SelectionLength > 0)  
+            textBox.Cut();
+    }
+
     void onQuit(object sender, EventArgs e) {
-        Application.Exit();
+        if (textBox.Modified) {  
+            DialogResult answer;  
+            answer = MessageBox.Show("The document has not been saved, would you like to continue without saving?", 
+                                    "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question);  
+            if (answer == DialogResult.No)  
+                return;  
+            else  
+                Application.Exit();  
+        }
+        else  
+            Application.Exit();    
     }
 }
 
