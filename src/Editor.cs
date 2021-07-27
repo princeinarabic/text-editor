@@ -11,22 +11,21 @@ public class Window : Form {
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
     ToolStripButton colorDialogBTN, bulletListBTN;
-    ToolStripSeparator bar;
-    Font font; 
 
     public Window() {
         ClientSize = new Size(500, 500);
         StartPosition = FormStartPosition.CenterScreen;
+        this.FormClosing += Form_Closing;
 
-        initFonts();
         textBox = new RichTextBox();
+        textBox.SelectionChanged += BTN_SelectionChanged;
         textboxFeatures();
         Controls.Add(textBox);         
 
         initMenuStrip();
         
         this.toolStrip = new ToolStrip();
-        toolStrip.GripStyle = ToolStripGripStyle.Hidden;  // hides the "grip" which are three dots you use to move the buttons
+        toolStrip.GripStyle = ToolStripGripStyle.Hidden;  
         toolStrip.BackColor = Color.LightGreen;  
         
         initIcons();
@@ -37,14 +36,33 @@ public class Window : Form {
 
         menuStrip.Dock = DockStyle.Top;  // adding it after toolStrip to make the menu on top of buttons
         Controls.Add(menuStrip);         // because whatever is added last goes on top.
+
+    }  
+
+    void BTN_SelectionChanged(object sender, EventArgs e) {
+        if (textBox.SelectionFont.Bold == true)
+            boldBTN.Checked = true;
+        else 
+            boldBTN.Checked = false;
+
+        if (textBox.SelectionFont.Italic == true)
+            italicBTN.Checked = true;
+        else 
+            italicBTN.Checked = false;
+
+        if (textBox.SelectionFont.Underline == true)
+            underlineBTN.Checked = true;
+        else 
+            underlineBTN.Checked = false;
     }
 
-    void initFonts() {
-        font = new Font("Arial", 11, FontStyle.Regular);
+    Font initFont() {  
+        Font font = new Font("Arial", 11, FontStyle.Regular);
+        return font;
     }
 
     void textboxFeatures() {
-        textBox.Font = font;
+        textBox.Font = initFont();
         textBox.Multiline = true;
         textBox.Dock = DockStyle.Fill;
         textBox.ShowSelectionMargin = true;
@@ -59,21 +77,22 @@ public class Window : Form {
         Initializes a new instance of the ToolStripMenuItem class that displays the specified text 
         and image and that does the specified action when the ToolStripMenuItem is clicked */
         ToolStripMenuItem[] fileItems = {
-            new ToolStripMenuItem("Open", null, onOpen),
-            new ToolStripMenuItem("Quit", null, onQuit),
+            new ToolStripMenuItem("Open...", null, onOpen),
             new ToolStripMenuItem("Save", null, onSave),
+            new ToolStripMenuItem("Save As...", null, onSave),
+            new ToolStripMenuItem("Quit", null, onQuit),
         };
 
         ToolStripMenuItem[] editItems = {
             new ToolStripMenuItem("Undo", null, onUndo),
             new ToolStripMenuItem("Redo", null, onRedo),
             new ToolStripMenuItem("Select All", null, onSelectAll),
-            new ToolStripMenuItem("Paste", null, onPaste),
             new ToolStripMenuItem("Cut", null, onCut),
+            new ToolStripMenuItem("Paste", null, onPaste),
         };
 
         ToolStripMenuItem[] fontItems = {
-            new ToolStripMenuItem("Choose Font", null, onChooseFont),
+            new ToolStripMenuItem("Choose Font...", null, onChooseFont),
         };
         
         ToolStripMenuItem[] topItems = {
@@ -89,46 +108,49 @@ public class Window : Form {
             menuStrip.Items.Add(item);
     }
 
-    FontStyle newBoldFont;  
     void boldBTN_Click(object sender, EventArgs e) {
-        if (textBox.SelectionFont != null) {
-            Font currentFont = textBox.SelectionFont;
+        Font newFont, oldFont;  
+        oldFont = textBox.SelectionFont;  
+        if (oldFont.Bold)  
+            newFont = new Font(oldFont, oldFont.Style & ~FontStyle.Bold);  
+        else  
+            newFont = new Font(oldFont, oldFont.Style | FontStyle.Bold);  
+        
+        textBox.SelectionFont = newFont;  
+        textBox.Focus();  
 
-            if (textBox.SelectionFont.Bold == true) 
-                newBoldFont = FontStyle.Regular;
-            else    
-                newBoldFont = FontStyle.Bold;
-
-            textBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newBoldFont);
-        }
+        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Bold == false) 
+            boldBTN.Checked = false; 
     }
 
-    FontStyle newItalicFont;
     void italicBTN_Click(object sender, EventArgs e) {
-        if (textBox.SelectionFont != null) {
-            Font currentFont = textBox.SelectionFont;
+        Font newFont, oldFont;  
+        oldFont = textBox.SelectionFont;  
+        if (oldFont.Italic)  
+            newFont = new Font(oldFont, oldFont.Style & ~FontStyle.Italic);  
+        else  
+            newFont = new Font(oldFont, oldFont.Style | FontStyle.Italic);  
+        
+        textBox.SelectionFont = newFont;        
+        textBox.Focus();  
 
-            if (textBox.SelectionFont.Italic == true) 
-                newItalicFont = FontStyle.Regular;
-            else    
-                newItalicFont = FontStyle.Italic;
-
-            textBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newItalicFont);
-        }
+        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Italic == false) 
+            italicBTN.Checked = false; 
     }
 
-    FontStyle newUnderlineFont;
     void underlineBTN_Click(object sender, EventArgs e) {
-        if (textBox.SelectionFont != null) {
-            Font currentFont = textBox.SelectionFont;
+        Font newFont, oldFont;  
+        oldFont = textBox.SelectionFont;  
+        if (oldFont.Underline)  
+            newFont = new Font(oldFont, oldFont.Style & ~FontStyle.Underline);  
+        else  
+            newFont = new Font(oldFont, oldFont.Style | FontStyle.Underline);  
+        
+        textBox.SelectionFont = newFont;  
+        textBox.Focus();  
 
-            if (textBox.SelectionFont.Underline == true) 
-                newUnderlineFont = FontStyle.Regular;
-            else    
-                newUnderlineFont = FontStyle.Underline;
-
-            textBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newUnderlineFont);
-        }
+        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Underline == false) 
+            underlineBTN.Checked = false; 
     }
 
     void bulletButtonChecked(object sender, EventArgs e) {
@@ -136,15 +158,19 @@ public class Window : Form {
             textBox.SelectionBullet = true;
     }
 
-    void alignmentButtonChecked(object sender, EventArgs e) {
-        if (alignLeftBTN.Checked)
-            textBox.SelectionAlignment = HorizontalAlignment.Left;
-        else if (alignCenterBTN.Checked)    
-            textBox.SelectionAlignment = HorizontalAlignment.Center;
-        else if (alignRightBTN.Checked)
-            textBox.SelectionAlignment = HorizontalAlignment.Right;
-        else 
-            textBox.SelectionAlignment = HorizontalAlignment.Left;
+    void alignLeft(object sender, EventArgs e) {
+        alignRightBTN.Checked = alignCenterBTN.Checked = false;
+        textBox.SelectionAlignment = HorizontalAlignment.Left;
+    }
+
+    void alignCenter(object sender, EventArgs e) {
+        alignRightBTN.Checked = alignLeftBTN.Checked = false;
+        textBox.SelectionAlignment = HorizontalAlignment.Center;
+    }
+
+    void alignRight(object sender, EventArgs e) {
+        alignLeftBTN.Checked = alignCenterBTN.Checked = false;
+        textBox.SelectionAlignment = HorizontalAlignment.Right;
     }
 
     void colorDialogBTN_Click(object sender, EventArgs e) {
@@ -159,9 +185,9 @@ public class Window : Form {
         italicBTN.Click += italicBTN_Click;
         underlineBTN.Click += underlineBTN_Click;
 
-        alignRightBTN.Click += alignmentButtonChecked;
-        alignCenterBTN.Click += alignmentButtonChecked;
-        alignRightBTN.Click += alignmentButtonChecked;
+        alignLeftBTN.Click += alignLeft;
+        alignCenterBTN.Click += alignCenter;
+        alignRightBTN.Click += alignRight;
 
         bulletListBTN.Click += bulletButtonChecked;
         colorDialogBTN.Click += colorDialogBTN_Click;
@@ -175,7 +201,7 @@ public class Window : Form {
     }
 
     void addSeparator() {
-        bar = new ToolStripSeparator();
+        ToolStripSeparator bar = new ToolStripSeparator();
         toolStrip.Items.Add(bar);
     }
 
@@ -224,11 +250,31 @@ public class Window : Form {
         }
     }                 
 
-    void onSave(object sender, EventArgs e) {  
+    string currentFile = "";
+    void onSave(object sender, EventArgs e) {
+        if (currentFile == "") {  
+            onSaveAs(this, e);  
+            return;  
+        }  
+        else {
+            string strExt;  
+            strExt = System.IO.Path.GetExtension(currentFile);  
+            strExt = strExt.ToUpper();  
+
+            StreamWriter textWriter = new StreamWriter(currentFile);  
+            textWriter.Write(textBox.Text);  
+            textWriter.Close();  
+            textWriter = null;   
+            textBox.Modified = false;  
+        }
+        this.Text = "Editor: " + currentFile.ToString();
+    }
+
+    void onSaveAs(object sender, EventArgs e) {  
         SaveFileDialog saveFile = new SaveFileDialog();
         saveFile.Title = "Save File";  
-        saveFile.DefaultExt = "rtf";  // rich text format  
-        saveFile.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|HTML Files|*.htm|All Files|*.*";  
+        saveFile.DefaultExt = "txt";  // rich text format  
+        saveFile.Filter = "Text Files|*.txt|HTML Files|*.htm|All Files|*.*";  
         saveFile.FilterIndex = 1;  
         saveFile.ShowDialog();  
 
@@ -245,8 +291,10 @@ public class Window : Form {
             textWriter = new StreamWriter(saveFile.FileName);  
             textWriter.Write(textBox.Text);  
             textWriter.Close();  
+            textWriter = null;
         }  
-        string currentFile = saveFile.FileName;  
+
+        currentFile = saveFile.FileName;  
         textBox.Modified = false;  
         this.Text = "Editor: " + currentFile.ToString();
         MessageBox.Show("Saved Successfully", "File address: " + 
@@ -255,10 +303,8 @@ public class Window : Form {
 
     void onChooseFont(object sender, EventArgs e) {
         FontDialog fd = new FontDialog();
-        if ( textBox.SelectionFont != null) 
-            fd.Font = textBox.SelectionFont;
-        else 
-            fd.Font = null;  
+
+        fd.Font = textBox.SelectionFont;
         fd.ShowApply = true;  
 
         if (fd.ShowDialog() == DialogResult.OK)  
@@ -293,16 +339,27 @@ public class Window : Form {
             answer = MessageBox.Show("The document has not been saved, continue without saving?", 
                                     "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question);  
             if (answer == DialogResult.No)  
-                return;  
+                onSaveAs(this, e);
             else  
                 Application.Exit();  
         }
         else  
             Application.Exit();    
     }
+
+    void Form_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        if (textBox.Modified) {    
+            if (MessageBox.Show("The document has not been saved, continue without saving?", 
+                "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) 
+            {
+                e.Cancel = true;
+                onSaveAs(this, e);
+            }
+        }
+    }
 }
 
- class Editor {
+class Editor {
     [STAThread]
     static void Main() {
         Window w = new Window();
