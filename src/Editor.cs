@@ -11,6 +11,7 @@ public class Window : Form {
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
     ToolStripButton colorDialogBTN, bulletListBTN;
+    ColorDialog cd;
 
     public Window() {
         ClientSize = new Size(500, 500);
@@ -39,22 +40,6 @@ public class Window : Form {
 
     }  
 
-    void BTN_SelectionChanged(object sender, EventArgs e) {
-        if (textBox.SelectionFont.Bold == true)
-            boldBTN.Checked = true;
-        else 
-            boldBTN.Checked = false;
-
-        if (textBox.SelectionFont.Italic == true)
-            italicBTN.Checked = true;
-        else 
-            italicBTN.Checked = false;
-
-        if (textBox.SelectionFont.Underline == true)
-            underlineBTN.Checked = true;
-        else 
-            underlineBTN.Checked = false;
-    }
 
     Font initFont() {  
         Font font = new Font("Arial", 11, FontStyle.Regular);
@@ -79,7 +64,7 @@ public class Window : Form {
         ToolStripMenuItem[] fileItems = {
             new ToolStripMenuItem("Open...", null, onOpen),
             new ToolStripMenuItem("Save", null, onSave),
-            new ToolStripMenuItem("Save As...", null, onSave),
+            new ToolStripMenuItem("Save As...", null, onSaveAs),
             new ToolStripMenuItem("Quit", null, onQuit),
         };
 
@@ -108,6 +93,17 @@ public class Window : Form {
             menuStrip.Items.Add(item);
     }
 
+    void BTN_SelectionChanged(object sender, EventArgs e) {
+        boldBTN.Checked = textBox.SelectionFont.Bold;
+        italicBTN.Checked = textBox.SelectionFont.Italic;
+        underlineBTN.Checked = textBox.SelectionFont.Underline;
+        bulletListBTN.Checked = textBox.SelectionBullet;
+
+        alignLeftBTN.Checked = textBox.SelectionAlignment == HorizontalAlignment.Left ? true : false;
+        alignRightBTN.Checked = textBox.SelectionAlignment == HorizontalAlignment.Right ? true : false;
+        alignCenterBTN.Checked = textBox.SelectionAlignment == HorizontalAlignment.Center ? true : false;
+    }
+
     void boldBTN_Click(object sender, EventArgs e) {
         Font newFont, oldFont;  
         oldFont = textBox.SelectionFont;  
@@ -119,8 +115,9 @@ public class Window : Form {
         textBox.SelectionFont = newFont;  
         textBox.Focus();  
 
-        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Bold == false) 
-            boldBTN.Checked = false; 
+
+        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Bold == true) 
+            boldBTN.Checked = true; 
     }
 
     void italicBTN_Click(object sender, EventArgs e) {
@@ -134,8 +131,8 @@ public class Window : Form {
         textBox.SelectionFont = newFont;        
         textBox.Focus();  
 
-        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Italic == false) 
-            italicBTN.Checked = false; 
+        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Italic == true) 
+            italicBTN.Checked = true; 
     }
 
     void underlineBTN_Click(object sender, EventArgs e) {
@@ -149,8 +146,8 @@ public class Window : Form {
         textBox.SelectionFont = newFont;  
         textBox.Focus();  
 
-        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Underline == false) 
-            underlineBTN.Checked = false; 
+        if (textBox.SelectionLength > 0 || textBox.SelectionFont.Underline == true) 
+            underlineBTN.Checked = true; 
     }
 
     void bulletButtonChecked(object sender, EventArgs e) {
@@ -161,24 +158,37 @@ public class Window : Form {
     void alignLeft(object sender, EventArgs e) {
         alignRightBTN.Checked = alignCenterBTN.Checked = false;
         textBox.SelectionAlignment = HorizontalAlignment.Left;
+
+        if (textBox.SelectionLength >= 0 || textBox.SelectionAlignment == HorizontalAlignment.Left)
+            alignLeftBTN.Checked = true;
     }
 
     void alignCenter(object sender, EventArgs e) {
         alignRightBTN.Checked = alignLeftBTN.Checked = false;
         textBox.SelectionAlignment = HorizontalAlignment.Center;
+
+        if (textBox.SelectionLength >= 0 || textBox.SelectionAlignment == HorizontalAlignment.Center)
+            alignCenterBTN.Checked = true;
     }
 
     void alignRight(object sender, EventArgs e) {
         alignLeftBTN.Checked = alignCenterBTN.Checked = false;
         textBox.SelectionAlignment = HorizontalAlignment.Right;
+
+        if (textBox.SelectionLength >= 0 || textBox.SelectionAlignment == HorizontalAlignment.Right)
+            alignRightBTN.Checked = true;
     }
 
     void colorDialogBTN_Click(object sender, EventArgs e) {
-        ColorDialog cd = new ColorDialog();
+        colorDialogBTN.Checked = true;
+        cd = new ColorDialog();
         cd.Color = textBox.ForeColor;  
         if (cd.ShowDialog() == DialogResult.OK)  
             textBox.SelectionColor = cd.Color; 
-    }
+
+        if (textBox.SelectionColor == Color.Black)
+            colorDialogBTN.Checked = false;    
+    } 
 
     void buttonActions() {
         boldBTN.Click += boldBTN_Click;
@@ -218,8 +228,9 @@ public class Window : Form {
         this.colorDialogBTN = iconButton("ColorDialog_16x");
 
         boldBTN.CheckOnClick = italicBTN.CheckOnClick = underlineBTN.CheckOnClick = true;
-        alignLeftBTN.CheckOnClick = alignCenterBTN.CheckOnClick = alignRightBTN.CheckOnClick = true;
-        bulletListBTN.CheckOnClick = colorDialogBTN.CheckOnClick = true;
+        //alignLeftBTN.CheckOnClick = alignCenterBTN.CheckOnClick = alignRightBTN.CheckOnClick = true;
+        bulletListBTN.CheckOnClick = true;
+        //colorDialogBTN.CheckOnClick = true;
 
         toolStrip.Items.Add(boldBTN); toolStrip.Items.Add(italicBTN); toolStrip.Items.Add(underlineBTN);
         addSeparator();
@@ -230,51 +241,62 @@ public class Window : Form {
         toolStrip.Items.Add(colorDialogBTN);
     }
 
-    void loadFile(string filename) {
-        string text = "";                                   
-
-        using (StreamReader sr = new StreamReader(filename))
-            while (sr.ReadLine() is string s)
-                text += s + "\n";           
-
-        textBox.Text = text;                    
-    }                                                       
-                                         
-    /* The OpenFileDialog component allows users to browse  the folders of their computer or any computer on the 
-    network and select one or more files to open. The dialog box returns the path and name of the file the 
-    user selected in the dialog box. The FileName property  can be set prior to showing the dialog box */   
-    void onOpen(object sender, EventArgs e) {       
-        using (var dialog = new OpenFileDialog()) { 
-            if (dialog.ShowDialog() == DialogResult.OK)
-                loadFile(dialog.FileName);
-        }
-    }                 
-
     string currentFile = "";
+    void onOpen(object sender, EventArgs e) {
+        OpenFileDialog fd = new OpenFileDialog();
+        string text = "";
+
+        fd.Title = "Open file";
+        fd.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|All Files|*.*";
+        fd.FilterIndex = 1;
+        fd.ShowDialog();
+        if (fd.FileName == "")
+            return;
+
+        string strExt;  
+        strExt = System.IO.Path.GetExtension(fd.FileName);  
+        strExt = strExt.ToUpper();  
+
+        if (strExt == ".RTF")  
+            textBox.LoadFile(fd.FileName, RichTextBoxStreamType.RichText);  
+        else {                
+            using (StreamReader sr = new StreamReader(fd.FileName)) {
+                while (sr.ReadLine() is string s)
+                    text += s + "\n";
+            }
+            textBox.Text = text;
+        }  
+
+        currentFile = fd.FileName;  
+        textBox.Modified = false;  
+        this.Text = "Editor: " + currentFile.ToString();  
+    }              
+
     void onSave(object sender, EventArgs e) {
         if (currentFile == "") {  
             onSaveAs(this, e);  
             return;  
         }  
-        else {
-            string strExt;  
-            strExt = System.IO.Path.GetExtension(currentFile);  
-            strExt = strExt.ToUpper();  
 
+        string strExt;
+        strExt = System.IO.Path.GetExtension(currentFile);
+        strExt = strExt.ToUpper();
+        if (strExt == ".RTF")
+            textBox.SaveFile(currentFile);
+        else {
             StreamWriter textWriter = new StreamWriter(currentFile);  
             textWriter.Write(textBox.Text);  
             textWriter.Close();  
-            textWriter = null;   
-            textBox.Modified = false;  
         }
+        textBox.Modified = false;  
         this.Text = "Editor: " + currentFile.ToString();
     }
 
     void onSaveAs(object sender, EventArgs e) {  
         SaveFileDialog saveFile = new SaveFileDialog();
         saveFile.Title = "Save File";  
-        saveFile.DefaultExt = "txt";  // rich text format  
-        saveFile.Filter = "Text Files|*.txt|HTML Files|*.htm|All Files|*.*";  
+        saveFile.DefaultExt = "rtf";  
+        saveFile.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|All Files|*.*";  
         saveFile.FilterIndex = 1;  
         saveFile.ShowDialog();  
 
@@ -291,7 +313,6 @@ public class Window : Form {
             textWriter = new StreamWriter(saveFile.FileName);  
             textWriter.Write(textBox.Text);  
             textWriter.Close();  
-            textWriter = null;
         }  
 
         currentFile = saveFile.FileName;  
@@ -353,7 +374,7 @@ public class Window : Form {
                 "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) 
             {
                 e.Cancel = true;
-                onSaveAs(this, e);
+                onSave(this, e);
             }
         }
     }
