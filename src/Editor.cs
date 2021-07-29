@@ -12,12 +12,14 @@ public class Window : Form {
     ToolStripButton colorDialogBTN, bulletListBTN;
     ColorDialog cd;
     SaveFileDialog saveFile;
+    string currentFile = "";
 
     public Window() {
         formFeatures();
 
         textBox = new RichTextBox();
         textBox.SelectionChanged += BTN_SelectionChanged;
+        textBox.TextChanged += Text_Changed;
         textboxFeatures();
         Controls.Add(textBox);         
 
@@ -102,6 +104,11 @@ public class Window : Form {
 
 
     /*   This section takes care of buttons   */  
+
+    void Text_Changed(object sender, EventArgs e) {
+        bulletListBTN.Checked = (textBox.SelectionBullet == true);
+    }
+
     void BTN_SelectionChanged(object sender, EventArgs e) {
         boldBTN.Checked = textBox.SelectionFont.Bold;
         italicBTN.Checked = textBox.SelectionFont.Italic;
@@ -113,6 +120,7 @@ public class Window : Form {
         alignCenterBTN.Checked = (textBox.SelectionAlignment == HorizontalAlignment.Center); 
 
         colorDialogBTN.Checked = (textBox.SelectionColor != Color.Black); 
+        //bulletListBTN.Checked = (textBox.SelectionBullet == true);
     }
 
     void handleStyleClick(ToolStripButton styleBTN, FontStyle style) {
@@ -126,9 +134,7 @@ public class Window : Form {
         textBox.SelectionFont = newFont;  
         textBox.Focus();  
         styleBTN.Checked = true; 
-
-        if (((textBox.SelectionFont.Style & style) != 0) == false) 
-            styleBTN.Checked = false;
+        styleBTN.Checked = ((newFont.Style & style) != 0);
     }
 
 
@@ -141,12 +147,8 @@ public class Window : Form {
     void underlineBTN_Click(object sender, EventArgs e) =>
         handleStyleClick(underlineBTN, FontStyle.Underline);
 
-
-    void bulletButtonChecked(object sender, EventArgs e) {
-        if (bulletListBTN.Checked)
-            textBox.SelectionBullet = true;
-        else 
-            textBox.SelectionBullet = false;
+    void bulletListButtonChecked(object sender, EventArgs e) {
+        textBox.SelectionBullet = bulletListBTN.Checked;
     }
 
     void alignLeft(object sender, EventArgs e) {
@@ -187,7 +189,7 @@ public class Window : Form {
         alignCenterBTN.Click += alignCenter;
         alignRightBTN.Click += alignRight;
 
-        bulletListBTN.Click += bulletButtonChecked;
+        bulletListBTN.Click += bulletListButtonChecked;
         colorDialogBTN.Click += colorDialogBTN_Click;
     }
 
@@ -219,7 +221,7 @@ public class Window : Form {
     }
 
     void initIcons() {
-        this.boldBTN = iconButton("Bold_16x");  // iconButton method is self written
+        this.boldBTN = iconButton("Bold_16x");  
         this.italicBTN = iconButton("Italic_16x");
         this.underlineBTN = iconButton("Underline_16x");
 
@@ -235,8 +237,6 @@ public class Window : Form {
 
 
     /*   "File" menu commands section   */
-
-    string currentFile = "";
     void onOpen(object sender, EventArgs e) {
         OpenFileDialog fd = new OpenFileDialog();
         string text = "";
@@ -264,12 +264,12 @@ public class Window : Form {
         currentFile = fd.FileName;  
         textBox.Modified = false;  
         this.Text = "Editor: " + currentFile.ToString();  
-    }             
-    
+    }        
+           
     void savingFile() {
         string strExt = Path.GetExtension(currentFile);
         if (strExt == ".RTF") 
-            textBox.SaveFile(currentFile); 
+            textBox.SaveFile(currentFile);  
         else {
             StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
             textWriter.Write(textBox.Text);  
@@ -283,8 +283,7 @@ public class Window : Form {
             onSaveAs(this, e);  
             return;  
         }  
-        savingFile();
-        this.Text = "Editor: " + currentFile.ToString();
+        savingFile();        
     }
 
     void onSaveAs(object sender, EventArgs e) {  
@@ -299,6 +298,7 @@ public class Window : Form {
             return;
 
         savingFile();
+
         currentFile = saveFile.FileName;  
         this.Text = "Editor: " + currentFile.ToString();
 
