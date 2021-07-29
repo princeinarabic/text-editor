@@ -10,8 +10,7 @@ public class Window : Form {
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
     ToolStripButton colorDialogBTN, bulletListBTN;
-    ColorDialog cd;
-    SaveFileDialog saveFile;
+    SaveFileDialog saveFile;  // Can't make it a local var b/z it's also being used in the savingFile_nonRTF() method.
     string currentFile = "";
 
     public Window() {
@@ -19,7 +18,6 @@ public class Window : Form {
 
         textBox = new RichTextBox();
         textBox.SelectionChanged += BTN_SelectionChanged;
-        textBox.TextChanged += Text_Changed;
         textboxFeatures();
         Controls.Add(textBox);         
 
@@ -33,6 +31,7 @@ public class Window : Form {
         buttons_CheckOnClick();
         attachButtons();
         buttonActions();
+        textBox.TextChanged += Text_Changed;
 
         toolStrip.Dock = DockStyle.Top;  
         Controls.Add(toolStrip);
@@ -106,7 +105,7 @@ public class Window : Form {
     /*   This section takes care of buttons   */  
 
     void Text_Changed(object sender, EventArgs e) {
-        bulletListBTN.Checked = (textBox.SelectionBullet == true);
+        bulletListBTN.Checked = textBox.SelectionBullet;
     }
 
     void BTN_SelectionChanged(object sender, EventArgs e) {
@@ -120,7 +119,6 @@ public class Window : Form {
         alignCenterBTN.Checked = (textBox.SelectionAlignment == HorizontalAlignment.Center); 
 
         colorDialogBTN.Checked = (textBox.SelectionColor != Color.Black); 
-        //bulletListBTN.Checked = (textBox.SelectionBullet == true);
     }
 
     void handleStyleClick(ToolStripButton styleBTN, FontStyle style) {
@@ -133,7 +131,6 @@ public class Window : Form {
         
         textBox.SelectionFont = newFont;  
         textBox.Focus();  
-        styleBTN.Checked = true; 
         styleBTN.Checked = ((newFont.Style & style) != 0);
     }
 
@@ -147,9 +144,8 @@ public class Window : Form {
     void underlineBTN_Click(object sender, EventArgs e) =>
         handleStyleClick(underlineBTN, FontStyle.Underline);
 
-    void bulletListButtonChecked(object sender, EventArgs e) {
+    void bulletListButtonChecked(object sender, EventArgs e) =>
         textBox.SelectionBullet = bulletListBTN.Checked;
-    }
 
     void alignLeft(object sender, EventArgs e) {
         alignRightBTN.Checked = alignCenterBTN.Checked = false;
@@ -171,7 +167,7 @@ public class Window : Form {
 
     void colorDialogBTN_Click(object sender, EventArgs e) {
         colorDialogBTN.Checked = true;
-        cd = new ColorDialog();
+        ColorDialog cd = new ColorDialog();
         cd.Color = textBox.ForeColor;  
         if (cd.ShowDialog() == DialogResult.OK)  
             textBox.SelectionColor = cd.Color; 
@@ -265,17 +261,11 @@ public class Window : Form {
         textBox.Modified = false;  
         this.Text = "Editor: " + currentFile.ToString();  
     }        
-           
-    void savingFile() {
-        string strExt = Path.GetExtension(currentFile);
-        if (strExt == ".RTF") 
-            textBox.SaveFile(currentFile);  
-        else {
-            StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
-            textWriter.Write(textBox.Text);  
-            textWriter.Close();
-        }
-        textBox.Modified = false; 
+
+    void savingFile_nonRTF() {
+        StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
+        textWriter.Write(textBox.Text);  
+        textWriter.Close();
     } 
 
     void onSave(object sender, EventArgs e) {
@@ -283,7 +273,14 @@ public class Window : Form {
             onSaveAs(this, e);  
             return;  
         }  
-        savingFile();        
+        string strExt = System.IO.Path.GetExtension(currentFile);
+        strExt = strExt.ToUpper();
+        if (strExt == ".RTF")
+            textBox.SaveFile(currentFile);
+        else 
+            savingFile_nonRTF();           
+        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile_nonRTF() method
+                                   // putting in savingFile_nonRTF() will prevent the form from closing even after saving the file
     }
 
     void onSaveAs(object sender, EventArgs e) {  
@@ -297,7 +294,13 @@ public class Window : Form {
         if (saveFile.FileName == "")
             return;
 
-        savingFile();
+        string strExt = System.IO.Path.GetExtension(saveFile.FileName);  
+        strExt = strExt.ToUpper();  
+        if (strExt == ".RTF") 
+            textBox.SaveFile(saveFile.FileName, RichTextBoxStreamType.RichText);   
+        else 
+            savingFile_nonRTF();
+        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile_nonRTF() method
 
         currentFile = saveFile.FileName;  
         this.Text = "Editor: " + currentFile.ToString();
