@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Windows;
 using System.Windows.Forms;
 
 public class Window : Form {
@@ -15,9 +14,7 @@ public class Window : Form {
     SaveFileDialog saveFile;
 
     public Window() {
-        ClientSize = new Size(500, 500);
-        StartPosition = FormStartPosition.CenterScreen;
-        this.FormClosing += Form_Closing;
+        formFeatures();
 
         textBox = new RichTextBox();
         textBox.SelectionChanged += BTN_SelectionChanged;
@@ -42,6 +39,12 @@ public class Window : Form {
         Controls.Add(menuStrip);         // because whatever is added last goes on top.
     }  
 
+    void formFeatures() {
+        //Text = "Text editor";
+        ClientSize = new Size(500, 500);
+        StartPosition = FormStartPosition.CenterScreen;
+        this.FormClosing += Form_Closing;   
+    }
 
     Font initFont() {  
         Font font = new Font("Arial", 11, FontStyle.Regular);
@@ -123,32 +126,27 @@ public class Window : Form {
         textBox.SelectionFont = newFont;  
         textBox.Focus();  
         styleBTN.Checked = true; 
+
+        if (((textBox.SelectionFont.Style & style) != 0) == false) 
+            styleBTN.Checked = false;
     }
 
-    void boldBTN_Click(object sender, EventArgs e) {
+
+    void boldBTN_Click(object sender, EventArgs e) => 
         handleStyleClick(boldBTN, FontStyle.Bold);
 
-        if (textBox.SelectionFont.Bold == false) 
-            boldBTN.Checked = false;
-    }
-
-    void italicBTN_Click(object sender, EventArgs e) {
+    void italicBTN_Click(object sender, EventArgs e) =>
         handleStyleClick(italicBTN, FontStyle.Italic);
 
-        if (!textBox.SelectionFont.Italic) 
-            italicBTN.Checked = false;
-    }
-
-    void underlineBTN_Click(object sender, EventArgs e) {
+    void underlineBTN_Click(object sender, EventArgs e) =>
         handleStyleClick(underlineBTN, FontStyle.Underline);
 
-        if (!textBox.SelectionFont.Underline) 
-            underlineBTN.Checked = false;
-    }
 
     void bulletButtonChecked(object sender, EventArgs e) {
         if (bulletListBTN.Checked)
             textBox.SelectionBullet = true;
+        else 
+            textBox.SelectionBullet = false;
     }
 
     void alignLeft(object sender, EventArgs e) {
@@ -250,7 +248,7 @@ public class Window : Form {
         if (fd.FileName == "")
             return;
 
-        string strExt = System.IO.Path.GetExtension(fd.FileName);  
+        string strExt = Path.GetExtension(fd.FileName);  
         strExt = strExt.ToUpper();  
 
         if (strExt == ".RTF")  
@@ -268,10 +266,16 @@ public class Window : Form {
         this.Text = "Editor: " + currentFile.ToString();  
     }             
     
-    void savingFile_nonRTF() {
-        StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
-        textWriter.Write(textBox.Text);  
-        textWriter.Close();
+    void savingFile() {
+        string strExt = Path.GetExtension(currentFile);
+        if (strExt == ".RTF") 
+            textBox.SaveFile(currentFile); 
+        else {
+            StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
+            textWriter.Write(textBox.Text);  
+            textWriter.Close();
+        }
+        textBox.Modified = false; 
     } 
 
     void onSave(object sender, EventArgs e) {
@@ -279,15 +283,7 @@ public class Window : Form {
             onSaveAs(this, e);  
             return;  
         }  
-
-        string strExt = System.IO.Path.GetExtension(currentFile);
-        strExt = strExt.ToUpper();
-        if (strExt == ".RTF")
-            textBox.SaveFile(currentFile);
-        else 
-            savingFile_nonRTF();
-
-        textBox.Modified = false;  
+        savingFile();
         this.Text = "Editor: " + currentFile.ToString();
     }
 
@@ -302,17 +298,10 @@ public class Window : Form {
         if (saveFile.FileName == "")
             return;
 
-        string strExt = System.IO.Path.GetExtension(saveFile.FileName);  
-        strExt = strExt.ToUpper();  
-        if (strExt == ".RTF") 
-            textBox.SaveFile(saveFile.FileName, RichTextBoxStreamType.RichText);   
-        else 
-            savingFile_nonRTF();
-
-        textBox.Modified = false;  
+        savingFile();
+        currentFile = saveFile.FileName;  
         this.Text = "Editor: " + currentFile.ToString();
 
-        currentFile = saveFile.FileName;  
         MessageBox.Show("Saved Successfully", "File address: " + 
                         currentFile, MessageBoxButtons.OK, MessageBoxIcon.Information);
     } 
@@ -324,7 +313,6 @@ public class Window : Form {
                                     "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question);  
             if (answer == DialogResult.No)  
                 return;
-                //onSaveAs(this, e);
             else  
                 Application.Exit();  
         }
@@ -335,7 +323,7 @@ public class Window : Form {
 
 
 
-    /* The section of "Edit" menu commands */
+    /*   The section of "Edit" menu commands   */
 
     void onSelectAll(object sender, EventArgs e) => textBox.SelectAll();  
 
@@ -385,7 +373,6 @@ public class Window : Form {
                 "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) 
             {
                 e.Cancel = true;
-                //onSave(this, e);
             }
         }
     }
