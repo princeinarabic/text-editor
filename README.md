@@ -1,1 +1,1 @@
-# text-editor
+In order to run the program, switch to the ```src/``` directory and run the command ```dotnet run``` in your command line. 
