@@ -279,8 +279,8 @@ public class Window : Form {
             return;  
         }  
         savingFile(currentFile);
-        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile_nonRTF() method
-                                   // putting in savingFile_nonRTF() will prevent the form from closing even after saving the file
+        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile() method
+                                   // putting in savingFile() will prevent the form from closing even after saving the file
     }
 
     void onSaveAs(object sender, EventArgs e) {  
@@ -295,7 +295,7 @@ public class Window : Form {
             return;
 
         savingFile(saveFile.FileName);
-        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile_nonRTF() method
+        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile() method
 
         currentFile = saveFile.FileName;  
         this.Text = "Editor: " + currentFile.ToString();
