@@ -284,7 +284,7 @@ public class Window : Form {
 
     void onSaveAs(object sender, EventArgs e) {  
         SaveFileDialog saveFile = new SaveFileDialog();
-        saveFile.Title = "Save File";  
+        saveFile.Title = "Save file";  
         saveFile.DefaultExt = "rtf";  
         saveFile.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|All Files|*.*";  
         saveFile.FilterIndex = 1;  
@@ -305,8 +305,7 @@ public class Window : Form {
 
     void onQuit(object sender, EventArgs e) {
         if (textBox.Modified) {  
-            DialogResult answer;  
-            answer = MessageBox.Show("The document has not been saved, continue without saving?", 
+            DialogResult answer = MessageBox.Show("The document has not been saved, continue without saving?", 
                                     "Unsaved Document", MessageBoxButtons.YesNo, MessageBoxIcon.Question);  
             if (answer == DialogResult.No)  
                 return;
@@ -329,9 +328,6 @@ public class Window : Form {
             textBox.Undo();  
     }
 
-    /*  Use the Redo method to reapply the last undo operation to the control. 
-        The CanRedo method enables you to determine whether the last operation 
-        the user has undone can be reapplied to the control.  */
     void onRedo(object sender, EventArgs e) {
         if (textBox.CanRedo) 
             textBox.Redo();
