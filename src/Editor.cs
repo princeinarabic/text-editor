@@ -64,9 +64,6 @@ public class Window : Form {
     }
 
     void initMenuStrip() {
-        /* ToolStripMenuItem(String, Image, EventHandler)	
-        Initializes a new instance of the ToolStripMenuItem class that displays the specified text 
-        and image and that does the specified action when the ToolStripMenuItem is clicked */
         ToolStripMenuItem[] fileItems = {
             new ToolStripMenuItem("Open...", null, onOpen),
             new ToolStripMenuItem("Save", null, onSave),
@@ -254,9 +251,7 @@ public class Window : Form {
             return;
 
         string strExt = Path.GetExtension(fd.FileName);  
-        strExt = strExt.ToUpper();  
-
-        if (strExt == ".RTF")  
+        if (strExt == ".rtf")  
             textBox.LoadFile(fd.FileName, RichTextBoxStreamType.RichText);  
         else    
             loadFile(fd.FileName);
