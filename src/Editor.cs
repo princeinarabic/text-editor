@@ -41,7 +41,7 @@ public class Window : Form {
     }  
 
     void formFeatures() {
-        //Text = "Text editor";
+        Text = "Editor";
         ClientSize = new Size(500, 500);
         StartPosition = FormStartPosition.CenterScreen;
         this.FormClosing += Form_Closing;   
@@ -262,25 +262,42 @@ public class Window : Form {
         this.Text = "Editor: " + currentFile.ToString();  
     }        
 
-    void savingFile_nonRTF() {
-        StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
-        textWriter.Write(textBox.Text);  
-        textWriter.Close();
-    } 
+    // void savingFile_nonRTF() {
+    //     StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
+    //     textWriter.Write(textBox.Text);  
+    //     textWriter.Close();
+    // } 
+
+    void savingFile() {
+        string strExt = Path.GetExtension(saveFile.FileName);  
+        strExt = strExt.ToUpper();  
+        if (strExt == ".RTF") 
+            textBox.SaveFile(saveFile.FileName, RichTextBoxStreamType.RichText);   
+        else {
+            StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
+            textWriter.Write(textBox.Text);  
+            textWriter.Close();
+            //savingFile_nonRTF();
+        }
+        textBox.Modified = false; 
+    }
 
     void onSave(object sender, EventArgs e) {
         if (currentFile == "") {  
             onSaveAs(this, e);  
             return;  
         }  
-        string strExt = System.IO.Path.GetExtension(currentFile);
+        string strExt = Path.GetExtension(currentFile);
         strExt = strExt.ToUpper();
         if (strExt == ".RTF")
             textBox.SaveFile(currentFile);
-        else 
-            savingFile_nonRTF();           
-        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile_nonRTF() method
-                                   // putting in savingFile_nonRTF() will prevent the form from closing even after saving the file
+        else {
+            StreamWriter textWriter = new StreamWriter(currentFile);  
+            textWriter.Write(textBox.Text);   
+            textWriter.Close();
+            // savingFile_nonRTF();           
+        }
+        textBox.Modified = false;                              
     }
 
     void onSaveAs(object sender, EventArgs e) {  
@@ -294,13 +311,17 @@ public class Window : Form {
         if (saveFile.FileName == "")
             return;
 
-        string strExt = System.IO.Path.GetExtension(saveFile.FileName);  
+        string strExt = Path.GetExtension(saveFile.FileName);  
         strExt = strExt.ToUpper();  
         if (strExt == ".RTF") 
             textBox.SaveFile(saveFile.FileName, RichTextBoxStreamType.RichText);   
-        else 
-            savingFile_nonRTF();
-        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile_nonRTF() method
+        else {
+            StreamWriter textWriter = new StreamWriter(saveFile.FileName);  
+            textWriter.Write(textBox.Text);  
+            textWriter.Close();
+            //savingFile_nonRTF();
+        }
+        textBox.Modified = false;  
 
         currentFile = saveFile.FileName;  
         this.Text = "Editor: " + currentFile.ToString();
@@ -369,7 +390,6 @@ public class Window : Form {
 
 
 
-    
     void Form_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
         if (textBox.Modified) {    
             if (MessageBox.Show("The document has not been saved, continue without saving?", 
