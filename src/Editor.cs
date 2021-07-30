@@ -10,7 +10,6 @@ public class Window : Form {
     ToolStripButton boldBTN, italicBTN, underlineBTN;  // BTN - button
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
     ToolStripButton colorDialogBTN, bulletListBTN;
-    SaveFileDialog saveFile;  // Can't make it a local var b/z it's also being used in the savingFile_nonRTF() method.
     string currentFile = "";
 
     public Window() {
@@ -284,7 +283,7 @@ public class Window : Form {
     }
 
     void onSaveAs(object sender, EventArgs e) {  
-        saveFile = new SaveFileDialog();
+        SaveFileDialog saveFile = new SaveFileDialog();
         saveFile.Title = "Save File";  
         saveFile.DefaultExt = "rtf";  
         saveFile.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|All Files|*.*";  
