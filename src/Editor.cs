@@ -11,6 +11,7 @@ public class Window : Form {
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
     ToolStripButton colorDialogBTN, bulletListBTN;
     string currentFile = "";
+    string text;
 
     public Window() {
         formFeatures();
@@ -232,9 +233,18 @@ public class Window : Form {
 
 
     /*   "File" menu commands section   */
+
+    void loadFile(string file) {
+        using (StreamReader sr = new StreamReader(file)) {
+            while (sr.ReadLine() is string s)
+                text += s + "\n";
+        }
+        textBox.Text = text;
+    }
+
     void onOpen(object sender, EventArgs e) {
         OpenFileDialog fd = new OpenFileDialog();
-        string text = "";
+        text = "";
 
         fd.Title = "Open file";
         fd.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|All Files|*.*";
@@ -248,13 +258,8 @@ public class Window : Form {
 
         if (strExt == ".RTF")  
             textBox.LoadFile(fd.FileName, RichTextBoxStreamType.RichText);  
-        else {                
-            using (StreamReader sr = new StreamReader(fd.FileName)) {
-                while (sr.ReadLine() is string s)
-                    text += s + "\n";
-            }
-            textBox.Text = text;
-        }  
+        else    
+            loadFile(fd.FileName);
 
         currentFile = fd.FileName;  
         textBox.Modified = false;  
