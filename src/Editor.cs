@@ -11,7 +11,6 @@ public class Window : Form {
     ToolStripButton alignLeftBTN, alignCenterBTN, alignRightBTN;
     ToolStripButton colorDialogBTN, bulletListBTN;
     string currentFile = "";
-    string text;
 
     public Window() {
         formFeatures();
@@ -232,6 +231,7 @@ public class Window : Form {
     /*   "File" menu commands section   */
 
     void loadFile(string file) {
+        string text = "";
         using (StreamReader sr = new StreamReader(file)) {
             while (sr.ReadLine() is string s)
                 text += s + "\n";
@@ -241,7 +241,6 @@ public class Window : Form {
 
     void onOpen(object sender, EventArgs e) {
         OpenFileDialog fd = new OpenFileDialog();
-        text = "";
 
         fd.Title = "Open file";
         fd.Filter = "Rich Text Files|*.rtf|Text Files|*.txt|All Files|*.*";
@@ -270,6 +269,7 @@ public class Window : Form {
             textWriter.Write(textBox.Text);  
             textWriter.Close();
         }
+        textBox.Modified = false;
     }
 
     void onSave(object sender, EventArgs e) {
@@ -278,8 +278,6 @@ public class Window : Form {
             return;  
         }  
         savingFile(currentFile);
-        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile() method
-                                   // putting in savingFile() will prevent the form from closing even after saving the file
     }
 
     void onSaveAs(object sender, EventArgs e) {  
@@ -292,13 +290,10 @@ public class Window : Form {
 
         if (saveFile.FileName == "")
             return;
-
         savingFile(saveFile.FileName);
-        textBox.Modified = false;  // there is a reason why I put it here and not in the savingFile() method
 
         currentFile = saveFile.FileName;  
         this.Text = "Editor: " + currentFile.ToString();
-
         MessageBox.Show("Saved Successfully", "File address: " + 
                         currentFile, MessageBoxButtons.OK, MessageBoxIcon.Information);
     } 
